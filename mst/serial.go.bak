@@ -1,0 +1,46 @@
+package main
+
+import (
+    "log"
+    lib "go.bug.st/serial"
+)
+
+var port lib.Port
+
+
+type SerialImpl struct {
+}
+
+func (s *SerialImpl)Init(c *SerialConfig) {
+    mode := &lib.Mode{
+        BaudRate: c.Baud,
+    }
+    _port, err := lib.Open(c.Name, mode)
+    if err != nil {
+        log.Fatal(err)
+    }
+    port = _port
+}
+
+func (s *SerialImpl)Write(data []byte) {
+    _, err := port.Write(data)
+    if err != nil {
+        log.Fatal(err)
+    }
+}
+
+func (s *SerialImpl)Read() []byte {
+    buf := make([]byte, 128)
+    n, err := port.Read(buf)
+    if err != nil {
+        log.Fatal(err)
+    }
+    if n != 0 {
+        return buf[:n]
+    }
+    return nil
+}
+
+func (s *SerialImpl)Close() {
+    port.Close()
+}

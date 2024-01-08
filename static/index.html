@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MIIO-SERIAL-TOOLS</title>
+    <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">-->
+    <link rel="stylesheet" href="./semantic.min.css">
+    <style type="text/css">
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: table;
+        }
+
+        .bodyContainer {
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        #appContainer {
+            width: 800px!important;
+            max-width: 800px!important;
+            height: 600px!important;
+            max-height: 600px!important;
+        }
+
+        .hide {
+            display: none!important;
+        }
+
+        .ipt {
+            width: 100px;
+        }
+
+        .outer {
+            height: 77%;
+            position: relative;
+        }
+
+        .outlist {
+            width: 766px;
+            height: 435px;
+            overflow: auto;
+            position: absolute;
+            top: 0;
+            right: 0px;
+            padding: 0px 10px!important;
+        }
+
+        .filter {
+            position: absolute;
+            top: 13px;
+            right: 13px;
+        }
+
+        .funcLbl {
+            position: absolute;
+            top: 50px;
+            right: 13px;
+        }
+
+        .funcPanel {
+            display: none;
+            width: 320px;
+            height: 330px;
+            overflow: auto;
+            padding: 0px!important;
+            margin: 0px!important;
+            position: relative!important;
+        }
+
+        .funcPanel .title {
+            float: left;
+            padding: 0px 5px;
+        }
+
+        .funcPanel .close {
+            float: right;
+            margin: 0px;
+        }
+
+        .funcPanelSub {
+            padding: 2px!important;
+            margin: 5px!important;
+        }
+
+        .funcPanelSub .label {
+            margin: 5px;
+            word-break: break-all;
+        }
+
+        .tools {
+            position: absolute;
+            bottom: 3px;
+            right: 13px;
+        }
+
+        .cursor {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="bodyContainer">
+    <div class="ui raised text container segment" id="appContainer">
+        <div class="ui">
+            <h3 class="ui left floated header">MIIO-SERIAL-TOOLS</h3>
+            <span style="font-size: small;background-color: pink;color: gray;border-radius: 8px;padding: 1px 4px;">by <a style="font-weight: bold;cursor: pointer" href="https://github.com/kerwin612/miio-serial-tools" target="_blank">kerwin612</a></span>
+            <button class="mini ui red right floated button" id="btnExit">
+                Exit
+            </button>
+            <button class="mini ui green right floated button" id="btnStart">
+                Start
+            </button>
+            <button class="mini ui green right floated button" id="btnRestart">
+                Restart
+            </button>
+            <button class="mini ui orange right floated button" id="btnStop">
+                Stop
+            </button>
+        </div>
+        <div style="clear:both"></div>
+        <div class="form">
+            <div class="ui label">
+                Name
+                <div class="detail lbl" id="lblName">COM1</div>
+                <div class="ui transparent input ipt hide">
+                    <input type="text" name="iptName" placeholder="Name: COM1/COM2..."/>
+                </div>
+            </div>
+            <div class="ui label">
+                BaudRate
+                <div class="detail lbl" id="lblBaudRate">115200</div>
+                <div class="ui transparent input ipt hide">
+                    <input type="text" name="iptBaudRate" placeholder="BaudRate: 74880/115200"/>
+                </div>
+            </div>
+            <div class="ui label">
+                DataBits
+                <div class="detail lbl" id="lblDataBits">8</div>
+                <div class="ui transparent input ipt hide">
+                    <input type="text" name="iptDataBits" placeholder="DataBits: 8"/>
+                </div>
+            </div>
+            <div class="ui label">
+                StopBits
+                <div class="detail lbl" id="lblStopBits">1</div>
+                <div class="ui transparent input ipt hide">
+                    <input type="text" name="iptStopBits" placeholder="StopBits: 1"/>
+                </div>
+            </div>
+            <div class="ui label">
+                Parity
+                <div class="detail lbl" id="lblParity">0</div>
+                <div class="ui transparent input ipt hide">
+                    <input type="text" name="iptParity" placeholder="Parity: 0/1"/>
+                </div>
+            </div>
+            <div class="ui label cursor" id="btnLed" title="点击查看LED规范">
+                LED
+                <span id="led" style="width:10px; height:10px; margin-left: 5px; background-color:gray; display:inline-block; border-radius:5px;"></span>
+            </div>
+            <button class="ui blue label cursor" id="btnReboot">
+                <div class="ui simple">
+                    Reboot
+                </div>
+            </button>
+            <button class="ui blue label cursor" id="btnReset">
+                <div class="ui simple">
+                    Reset
+                </div>
+            </button>
+            <div class="ui blue label">
+                <div class="ui simple dropdown">
+                    <i class="help small icon" style="margin: 0px"></i>
+                    <div class="menu">
+                        <div class="item"><a target="_blank" href="https://iot.mi.com/new/doc/introduction/main.html">小米IoT文档与资源中心</a></div>
+                        <div class="item"><a target="_blank" href="https://iot.mi.com/new/doc/embedded-development/wifi/serial-command.html">MIIO模组串口指令</a></div>
+                        <div class="item"><a target="_blank" href="/docs/spec串口指令调用方式.pdf">[miot-spec]spec串口指令调用方式</a></div>
+                        <div class="item"><a target="_blank" href="/docs/spec rpc定义.pdf">[miot-spec]spec rpc定义</a></div>
+                        <div class="item"><a target="_blank" href="/docs/其他要求.pdf">[miot-spec]其他要求</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ui segment outer">
+            <div class="ui list outlist" id="listOut"></div>
+            <div class="filter">
+                <div class="ui label" id ="lblFilter" style="cursor: default;">
+                    Add Filter
+                    <div class="ui transparent input ipt hide">
+                        <input type="text" placeholder="string..."/>
+                    </div>
+                </div>
+            </div>
+            <div class="funcLbl">
+                <div class="ui label lbl" style="cursor: default;">
+                    Function Panel
+                </div>
+                <div class="ui segment funcPanel">
+                    <div class="ui title">
+                        Function Panel
+                    </div>
+                    <div class="ui close">
+                        <i class="delete icon"></i>
+                    </div>
+                    <div style="clear:both"></div>
+                    <div class="ui segment funcPanelSub">
+                        <div class="ui label" id ="lblAutoResp" style="cursor: default;">
+                            Add AutoResp
+                            <div class="ui transparent input ipt hide">
+                                <input type="text" placeholder="req -> resp..."/>
+                            </div>
+                        </div>
+                        <div>? miot_req_cmd -auto-resp-> device_resp_cmd</div>
+                        <div>eg: <span style="background: honeydew;">down get_prop "prop.2.1" -> result 1</span></div>
+                        <div>eg: <span style="background: honeydew;">down get_prop "prop.2.1" -> result 1 -> properties_changed 2 1 1</span></div>
+                    </div>
+                    <div class="ui segment funcPanelSub">
+                        <div class="ui label" id ="lblShortCmd" style="cursor: default;">
+                            Add ShortCmd
+                            <div class="ui transparent input ipt hide">
+                                <input type="text" placeholder="short_cmd..."/>
+                            </div>
+                        </div>
+                        <div>? click short_cmd added below to send quickly</div>
+                        <div>eg: <span style="background: honeydew;">properties_changed 2 1 false 2 2 2</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="tools">
+                <i class="arrow circle down icon" id="btnSticky" style="cursor: default;"></i>
+                <i class="trash alternate icon" id="btnClear" style="cursor: default;"></i>
+            </div>
+        </div>
+        <div class="ui action input" style="width: 100%;">
+            <input type="text" placeholder="cmd..." id="fedCmd"/>
+            <button class="ui teal button" id="btnSend">Send</button>
+        </div>
+    </div>
+    <div class="ui basic modal">
+        <div class="content" style="text-align: center;">
+            The program seems to have a small problem, please <a href="#" onclick="location.reload();">refresh</a> and try.
+        </div>
+    </div>
+</div>
+</body>
+<!--<script
+        src="https://code.jquery.com/jquery-3.1.1.min.js"
+        integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+        crossorigin="anonymous"></script>-->
+<script src="./jquery-3.1.1.min.js"></script>
+<!--<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>-->
+<script src="./semantic.min.js"></script>
+
+<!-- lib -->
+<script type="text/javascript">
+
+// flicker
+function Flicker(onTime, offTime, callback) {
+    var interval;
+    var runing;
+    function on() {
+        callback(true);
+        interval = !runing ? null : setTimeout(function() {
+            runing && off();
+        }, onTime);
+    }
+    function off() {
+        callback(false);
+        interval = !runing ? null : setTimeout(function() {
+            runing && on();
+        }, offTime);
+    }
+    this.stop = function() {
+        runing = false;
+        off();
+    }
+    this.start = function() {
+        runing = true;
+        on();
+    }
+}
+
+// miot led
+function MIOTLed(element) {
+
+    var led = element;
+    var flicker = null;
+    var offColor = led.style.backgroundColor;
+    
+    var toLight = function(color) {
+        flicker && flicker.stop();
+        led.style.backgroundColor = color;
+    }
+    
+    var toFlicker = function(onColor, onTime, offColor, offTime) {
+        toLight(offColor);
+        flicker = new Flicker(onTime, offTime, function(state) {
+            led.style.backgroundColor = state ? onColor : offColor;
+        });
+        flicker.start();
+    }
+    
+    this.off = function() {
+        toLight(offColor);
+    }
+    
+    this.light = function(net) {
+        if (net === 'uap') {
+            toFlicker('orange', 100, offColor, 200);
+        } else if (net === 'offline') {
+            toFlicker('blue', 100, offColor, 200);
+        } else if (net === 'updating') {
+            toFlicker('orange', 200, offColor, 800);
+        } else if (net === 'local' || net === 'cloud') {
+            toLight('blue');
+        } else {
+            this.off();
+        }
+    }
+    
+}
+
+String.prototype.splitRow = function() {
+    var array = [];
+    this.split('\r\n').forEach((sub) => {
+        sub.split('\r').forEach((sub) => {
+            sub.split('\n').forEach((sub) => {
+                array.push(sub);
+            });
+        });
+    });
+    return array;
+}
+
+String.prototype.ansi = function() {
+    var result = /^\033(.*m)(.*)\033(.*m).*$/.exec(this);
+    if (result != null && result.length == 4) {
+        return {
+            'fg': result[1],
+            'text': result[2],
+            'bg': result[3]
+        };
+    }
+    return null;
+}
+
+</script>
+
+<!-- service -->
+<script type="text/javascript">
+function Service(statusChanged, onRecv) {
+
+    var status = false;
+    var socket = null;
+    
+    var onStatusChanged = function(newStatus) {
+        status = newStatus;
+        statusChanged && statusChanged(status);
+    }
+    
+    // startup
+    this.startup = function (onSuccess, onError) {
+        var wsErr = function(error) {
+            //onError && onError(error);
+            console.error(error);
+            setTimeout(wsConn, 1000);
+        }
+        var wsConn = function(callback) {
+            try {
+                socket != null && socket.close();
+                socket = new WebSocket('ws://' + window.location.host + '/ws');
+                
+                // Add an event listener for when a connection is open
+                socket.onopen = function () {
+                    console.log('WebSocket connection opened. Ready to send messages.');
+
+                    // Send a message to the server
+                    socket.send('Enjoy work!');
+                    
+                    callback && setTimeout(() => { callback(); }, 300);
+                };
+
+                // Add an event listener for when a message is received from the server
+                socket.onmessage = function (message) {
+                    var data = message.data;
+                    var index = data.indexOf('_cmd:');
+                    if (index == -1) {
+                        onRecv && onRecv(data);
+                        return;
+                    }
+                    var cmd = data.substr(index + 5, data.length - 1);
+                    if (cmd === 'stop') {
+                        onStatusChanged(false);
+                    }
+                };
+                
+                socket.onerror = function(event) {
+                    wsErr(event);
+                };
+            } catch (error) {
+                wsErr(error);
+            }
+        }
+        // status
+        $.get('/v1/status', 
+            function (result) {
+                onSuccess && onSuccess();
+                wsConn(() => { onStatusChanged(result.status); });
+            }
+        ).fail(function (error) {
+            onError && onError(error);
+        });
+    }
+
+    // send
+    this.send = function (cmd, onSuccess, onError) {
+        //if (!status) {
+        //  alert('not started.');
+        //  return;
+        //}
+        $.ajax({
+            url: '/v1/send',
+            type: 'POST',
+            data: JSON.stringify({cmd: cmd}),
+            contentType: 'application/json; charset=utf-8',
+            success: function () {
+                onSuccess && onSuccess();
+            },
+            error: function () {
+                onError && onError();
+            }
+        });
+    };
+
+    // start
+    this.start = function (serialConfig, onSuccess, onError) {
+        $.ajax({
+            url: '/v1/start',
+            type: 'POST',
+            data: JSON.stringify(serialConfig),
+            contentType: 'application/json; charset=utf-8',
+            success: function () {
+                onStatusChanged(true);
+                onSuccess && onSuccess();
+            },
+            error: function () {
+                onError && onError();
+            }
+        });
+    };
+
+    // stop
+    this.stop = function (callback) {
+        $.get('/v1/stop', function (result) {
+            onStatusChanged(false);
+            callback && callback();
+        });
+    };
+
+    // exit
+    this.exit = function (callback) {
+        $.get('/exit', function (result) {
+            onStatusChanged(false);
+            callback && callback();
+        });
+    };
+
+    // get serial config
+    this.getSerialConfig = function (callback) {
+        $.get('/v1/serial_config', function (result) {
+            callback && callback(result);
+        });
+    };
+
+    // update serial config
+    this.updateSerialConfig = function (serialConfig, callback) {
+        $.ajax({
+            url: '/v1/serial_config',
+            type: 'POST',
+            data: JSON.stringify(serialConfig),
+            contentType: 'application/json; charset=utf-8',
+            success: function () {
+                callback && callback();
+            }
+        });
+    };
+
+    // get auto_resp config
+    this.getAutoRespConfig = function (callback) {
+        $.get('/v1/auto_resp', function (result) {
+            callback && callback(result);
+        });
+    };
+
+    // update auto_resp config
+    this.updateAutoRespConfig = function (maps, callback) {
+        $.ajax({
+            url: '/v1/auto_resp',
+            type: 'POST',
+            data: JSON.stringify(maps),
+            contentType: 'application/json; charset=utf-8',
+            success: function () {
+                callback && callback();
+            }
+        });
+    };
+
+    // get short_cmd config
+    this.getShortCmdConfig = function (callback) {
+        $.get('/v1/short_cmd', function (result) {
+            callback && callback(result);
+        });
+    };
+
+    // update short_cmd config
+    this.updateShortCmdConfig = function (cmds, callback) {
+        $.ajax({
+            url: '/v1/short_cmd',
+            type: 'POST',
+            data: JSON.stringify(cmds),
+            contentType: 'application/json; charset=utf-8',
+            success: function () {
+                callback && callback();
+            }
+        });
+    };
+    
+}
+</script>
+
+<!-- module-filter -->
+<script type="text/javascript">
+function ModuleFilter() {
+
+    var filters = [];
+    
+    var addFilter = function(filter) {
+        filters[filters.length] = filter;
+        $('.filter').prepend('<div class="ui label lblFilter">' + filter + '<i class="delete icon"></i></div>');
+        $('.lblFilter .delete').unbind('click').click(function (event) {
+            $(event.target).parent().remove();
+            filters = jQuery.grep(filters, function(value) {
+                return value != $(event.target).parent().text().trim();
+            });
+        });
+    }
+
+    $('#lblFilter').click(function (event) {
+        $(event.target).find('.ipt').removeClass('hide').find('input').focus();
+    });
+    
+    $('#lblFilter input').blur(function (event) {
+        $(event.target).parent().addClass('hide');
+        var filter = $(event.target).val().trim();
+        if (!filter) return;
+        addFilter(filter);
+    });
+    
+    this.addFilter = addFilter;
+    
+    this.getFilter = function() {
+        return filters;
+    }
+    
+}
+</script>
+
+<!-- module-function panel -->
+<script type="text/javascript">
+function ModuleFunctionPanel(service) {
+
+    var syncAutoResp = function() {
+        var maps = [];
+        $('#lblAutoResp').parent().find('div.lbl').each(function(index, element) {
+            var value = $(element).text().trim().split('->');
+            var cmds = [];
+            value.forEach((v, i) => {
+                if (i === 0) {
+                    return;
+                } else {
+                    cmds.push(v.trim());
+                }
+            });
+            maps[maps.length] = {reqCmd: value[0].trim(), respCmd: cmds};
+        });
+        service.updateAutoRespConfig(maps);
+    }
+    
+    var addAutoResp = function(autoResp) {
+        $('#lblAutoResp').parent().append('<div class="ui label lbl">' + autoResp + '<i class="delete icon"></i></div>');
+        $('#lblAutoResp').parent().find('.delete').click(function (event) {
+            $(event.target).parent().remove();
+            syncAutoResp();
+        });
+    }
+    
+    var syncShortCmd = function() {
+        var cmds = [];
+        $('#lblShortCmd').parent().find('a.label').each(function(index, element) {
+            cmds[cmds.length] = $(element).text().trim();
+        });
+        service.updateShortCmdConfig(cmds);
+    }
+    
+    var addShortCmd = function(shortCmd) {
+        $('#lblShortCmd').parent().append('<a class="ui basic label">' + shortCmd + '<i class="delete icon"></i></a>');
+        $('#lblShortCmd').parent().find('.delete').unbind('click').click(function (event) {
+            $(event.target).parent().remove();
+            syncShortCmd();
+        });
+        $('#lblShortCmd').parent().find('a').contextmenu(function(event) {
+            event.preventDefault();
+            $('#fedCmd').val($(event.target).text().trim());
+        });
+        $('#lblShortCmd').parent().find('a').unbind('click').click(function(event) {
+            service.send($(event.target).text().trim());
+        });
+    }
+    
+    $('.funcLbl .lbl').click(function (event) {
+        $(event.target).hide().next().show();
+    });
+    
+    $('.funcLbl .delete').click(function (event) {
+        $(event.target).parent().parent().hide().prev().show();
+    });
+    
+    $('#lblAutoResp').click(function (event) {
+        $(event.target).find('.ipt').removeClass('hide').find('input').focus();
+    });
+    
+    $('#lblAutoResp input').blur(function (event) {
+        $(event.target).parent().addClass('hide');
+        var autoResp = $(event.target).val().trim();
+        if (!autoResp) return;
+        var value = autoResp.split('->');
+        if (value.length < 2) {
+            alert('invalid format[req -> resp].');
+        }
+        var str = '';
+        value.forEach((v, i) => {
+            if (i === 0) {
+                str = v.trim();
+            } else {
+                str += (' -> ' + v.trim());
+            }
+        });
+        addAutoResp(str);
+        syncAutoResp();
+    });
+
+    $('#lblShortCmd').click(function (event) {
+        $(event.target).find('.ipt').removeClass('hide').find('input').focus();
+    });
+    
+    $('#lblShortCmd input').blur(function (event) {
+        $(event.target).parent().addClass('hide');
+        var shortCmd = $(event.target).val().trim();
+        if (!shortCmd) return;
+        addShortCmd(shortCmd);
+        syncShortCmd();
+    });
+    
+    this.addAutoResp = addAutoResp;
+    this.addShortCmd = addShortCmd;
+    
+}
+</script>
+
+<!-- module-listout -->
+<script type="text/javascript">
+function ModuleListOut(service) {
+
+    var sticky = true;
+    var listOut = $('#listOut');
+    
+    var toSticky = function() {
+        if (sticky) {
+            listOut.scrollTop($('.outlist').prop("scrollHeight"));
+        }
+    }
+    
+    $('#btnClear').click(function () {
+        listOut.empty();
+    });
+    
+    $('#btnSticky').click(function () {
+        sticky = !sticky;
+        toSticky();
+    });
+    
+    this.addItem = function(message) {
+        var ansi = message.ansi();
+        if (ansi) {
+            listOut.append('<div class="item" style="color: green">' + ansi.text + '</div>');
+        } else {
+            listOut.append('<div class="item">' + message + '</div>');
+        }
+        toSticky();
+    }
+    
+}
+</script>
+
+<!-- module-serial config -->
+<script type="text/javascript">
+function ModuleSerialConfig(service) {
+
+    $('.form .label .lbl').click(function (event) {
+        $(event.target).hide().parent().find('.ipt').removeClass('hide').find('input').val('').focus().val($(event.target).text().trim());
+    });
+    
+    $('.form .label .ipt input').blur(function (event) {
+        if (!$(event.target).val().trim()) {
+            alert('invalid value.');
+            setTimeout(function() {
+                $(event.target).val($(event.target).parent().parent().find('.lbl').text()).focus();
+            }, 100);
+            return;
+        }
+        $(event.target).parent().addClass('hide').parent().find('.lbl').text($(event.target).val().trim()).show();
+        service.updateSerialConfig({
+            Name: $('#lblName').text().trim(),
+            Baud: parseInt($('#lblBaudRate').text().trim()),
+            Bits: parseInt($('#lblDataBits').text().trim()),
+            Stop: parseInt($('#lblStopBits').text().trim()),
+            Pary: parseInt($('#lblParity').text().trim())
+        });
+    });
+    
+}
+</script>
+
+<!-- module-sender -->
+<script type="text/javascript">
+function ModuleSender(service) {
+
+    var fedCmd = $('#fedCmd');
+    var btnSend = $('#btnSend');
+
+    var toSend = function() {
+        var cmd = fedCmd.val();
+        if (!cmd) {
+            alert('invalid cmd.');
+            return;
+        }
+        service.send(cmd, () => {
+            fedCmd.val('');
+        }, () => {
+            alert('invalid data.');
+        });
+    }
+    
+    fedCmd.keypress(function(event) {
+        if (event.keyCode == 13) {
+            toSend();
+        }
+    });
+    
+    btnSend.click(toSend);
+    
+    this.statusChanged = function(status) {
+        fedCmd.prop('disabled', !status);
+        btnSend.prop('disabled', !status);
+    }
+    
+}
+</script>
+
+<!-- module-miio -->
+<script type="text/javascript">
+function ModuleMiio(service) {
+
+    var led = new MIOTLed($('#led')[0]);
+    var btnReboot = $('#btnReboot');
+    var btnReset = $('#btnReset');
+
+    $('#btnLed').click(function () {
+        window.open('https://iot.mi.com/new/doc/standard/embedded-standard/embedded-development-standard.html', '_blank');
+    });
+    
+    btnReboot.click(function() {
+        service.send('reboot', function() {
+            led.off();
+        });
+    });
+    
+    btnReset.click(function() {
+        service.send('restore', function() {
+            led.off();
+        });
+    });
+    
+    this.ledOff = function() {
+        led.off();
+    }
+    
+    this.ledLight = function(net) {
+        led.light(net);
+    }
+    
+    this.statusChanged = function(status) {
+        btnReset.prop('disabled', !status);
+        btnReboot.prop('disabled', !status);
+    }
+    
+}
+</script>
+
+<!-- module-status -->
+<script type="text/javascript">
+function ModuleStatus(service) {
+
+    var isExit = true;
+    var btnExit = $('#btnExit');
+    var btnStop = $('#btnStop');
+    var btnStart = $('#btnStart');
+    var btnRestart = $('#btnRestart');
+
+    var start = function(event) {
+        service.start(
+            {
+                Name: $('#lblName').text().trim(),
+                Baud: parseInt($('#lblBaudRate').text().trim()),
+                Bits: parseInt($('#lblDataBits').text().trim()),
+                Stop: parseInt($('#lblStopBits').text().trim()),
+                Pary: parseInt($('#lblParity').text().trim())
+            }, 
+            function() {
+                isExit = false
+                setTimeout(() => {
+                    $(event.target).prop('disabled', false);
+                }, 500);
+            }, 
+            function() {
+                setTimeout(() => {
+                    $(event.target).prop('disabled', false);
+                }, 500);
+                alert('The serial port configuration is invalid or the device does not exist.');
+            }
+        );
+    }
+    
+    btnExit.click(function () {
+        service.exit(() => {
+            isExit = true;
+            $('.bodyContainer').html('<div style="text-align: center;">Enjoy&nbsp;life!</div>');
+        });
+    });
+    
+    btnStop.hide().click(function (event) {
+        $(event.target).prop('disabled', true);
+        service.stop(function() {
+            setTimeout(function() {
+                $(event.target).prop('disabled', false);
+            }, 500);
+        });
+    });
+    
+    btnStart.hide().click(function (event) {
+        $(event.target).prop('disabled', true);
+        start(event);
+    });
+    
+    btnRestart.hide().click(function (event) {
+        $(event.target).prop('disabled', true);
+        service.stop(() => {
+            start(event);
+        });
+    });
+    
+    this.isExit = function() {
+        return isExit;
+    }
+    
+    this.statusChanged = function(status) {
+        if (status) {
+            btnStart.hide();
+            btnStop.show();
+            btnRestart.show();
+            service.send('net');
+        } else {
+            btnRestart.hide();
+            btnStop.hide();
+            btnStart.show();
+            moduleMiio.ledOff();
+        }
+    }
+
+}
+</script>
+
+<!-- main -->
+<script type="text/javascript">
+
+    var service = new Service(
+        (status) => {
+            moduleStatus.statusChanged(status);
+            moduleSender.statusChanged(status);
+            moduleMiio.statusChanged(status);
+        },
+        (message) => {
+            message.splitRow().forEach((sub) => {
+                var ansi = sub.ansi();
+                var data = ansi ? ansi.text : sub;
+                
+                var isNetChange = /^.*down MIIO_net_change (.*)$/.exec(data) || /^.*(cloud|offline|local|unprov|uap|updating)$/.exec(data);
+                if (isNetChange && isNetChange.length === 2) {
+                    moduleMiio.ledLight(isNetChange[1]);
+                }
+                
+                var filters = moduleFilter.getFilter();
+                for (var i = 0, j = filters.length; i < j; i++) {
+                    if (new RegExp(filters[i]).test(data)) return;
+                }
+                
+                moduleListOut.addItem(sub);
+            });
+        }
+    );
+    
+    var moduleMiio = new ModuleMiio(service);
+    var moduleStatus = new ModuleStatus(service);
+    var moduleSender = new ModuleSender(service);
+    var moduleFilter = new ModuleFilter(service);
+    var moduleListOut = new ModuleListOut(service);
+    var moduleSerialConfig = new ModuleSerialConfig(service);
+    var moduleFunctionPanel = new ModuleFunctionPanel(service);
+    
+    var modal = $('.ui.modal').modal({
+        closable: false
+    });
+
+    service.startup(() => {
+    
+        moduleFilter.addFilter('^\\[.*recv:[ ]?$');
+        moduleFilter.addFilter('get_down|down none');
+        
+        service.getSerialConfig((result) => {
+            result.Name && $('#lblName').text(result.Name);
+            result.Baud && $('#lblBaudRate').text(result.Baud);
+            result.Bits && $('#lblDataBits').text(result.Bits);
+            result.Stop && $('#lblStopBits').text(result.Stop);
+            result.Pary && $('#lblParity').text(result.Pary);
+        });
+        
+        service.getAutoRespConfig((result) => {
+            for (var i = 0, j = result.length; i < j; i++) {
+                var str = '';
+                result[i].RespCmd.forEach((v, i) => {
+                    str += (' -> ' + v.trim());
+                });
+                moduleFunctionPanel.addAutoResp(result[i].ReqCmd + str);
+            }
+        });
+        
+        service.getShortCmdConfig((result) => {
+            for (var i = 0, j = result.length; i < j; i++) {
+                moduleFunctionPanel.addShortCmd(result[i]);
+            }
+        });
+        
+    }, (error) => {
+        console.error(error);
+        if (!moduleStatus.isExit()) modal.modal('show');
+    });
+
+</script>
+</html>

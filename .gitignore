@@ -1,0 +1,5 @@
+icon/*.go
+statik/
+*.exe
+*.sum
+*.iml
